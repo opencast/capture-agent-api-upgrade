@@ -1,0 +1,65 @@
+Requirements/Wishes Extracted From Talk With Vendors and Users
+--------------------------------------------------------------
+*Notes from Lars based on CA-API Sessions @Mancheser-Conference & Extron Meeting*
+
+ - Do not break the old API
+    - Point made by several vendors
+    - Old devices that are out there right now should still work
+    - We need versioning
+ - Make the API modular
+    - Not all CAs need to provide everything
+    - Create a small, easy to implement base API
+    - Create extensions
+    - Base API could be current mandatory API part:
+       - send status
+       - get schedule
+       - ingest
+    - Extensions could be things like
+       - Provides live status information
+		    - Preview images
+			 - Preview stream
+       - Selection of inputs
+       - Selection of environments
+ - Clearly define how metadata should be handled
+    - What should a CA do with passed metadata
+    - Is a CA allowed to modify or add metadata
+    - How should metadata be added
+ - Capture device API
+    - Define common places to get status information from a capture agent
+    - Define information a capture agent should provide
+    - Examples
+       - JSON with status information
+       - preview image
+    - For tools like CA dashboard
+ - WebSocket Communication for Server to CA Communication
+    - Idea from vendors
+    - Makes it possible to get through firewall
+    - No real example for what this would be used
+ - Normalization of Input Names
+	 - If a screen recording is selected it should be possible to swap the CA
+		and it should not break because it does not know the term
+    - If terms are not knows CA should fall back to default inputs
+    - We should define a set of recommended terms to use
+    - CA vendors should still be able to extend this set of terms
+ - Switch to common format for input specification
+    - Most things can be defined using JSON
+    - Not using JSON at the moment:
+       - iCal for schedule
+       - XML for inputs
+ - Let CA specify environments
+    - Additional settings for ca to set
+	 - Example: A CA may specify that it supports an environment “Blackboard”
+		which, attached to a scheduled recording definition will make the CA send
+		some commands to a PTZ camera, …
+    - Combine this with input specification? *(-lars)*
+    - Things that may be done based on an environment:
+       - Send HTTP requests
+       - Send RS232 commands
+       - Control Visca PTZ camera
+ - Provide a CA test case
+    - Script to run against a CA, ensuring basic functionality
+ - How to handle live streaming events
+    - Start separate discussion on list
+    - Harvard DCE has something
+    - NCast has something
+ - Add support for a CA description *(MH-8963)*
