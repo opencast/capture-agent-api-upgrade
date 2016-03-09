@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>Summit2015 wishes - Capture Agent API Upgrade</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">Capture Agent API Upgrade</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../api/">Api</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../decisions/">Decisions</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../random-thoughts/">Random thoughts</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Summit2015 wishes</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../random-thoughts/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="prev" >
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#requirementswishes-extracted-from-talk-with-vendors-and-users">Requirements/Wishes Extracted From Talk With Vendors and Users</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h2 id="requirementswishes-extracted-from-talk-with-vendors-and-users">Requirements/Wishes Extracted From Talk With Vendors and Users</h2>
+<p><em>Notes from Lars based on CA-API Sessions @Mancheser-Conference &amp; Extron Meeting</em></p>
+<ul>
+<li>Do not break the old API<ul>
+<li>Point made by several vendors</li>
+<li>Old devices that are out there right now should still work</li>
+<li>We need versioning</li>
+</ul>
+</li>
+<li>Make the API modular<ul>
+<li>Not all CAs need to provide everything</li>
+<li>Create a small, easy to implement base API</li>
+<li>Create extensions</li>
+<li>Base API could be current mandatory API part:</li>
+<li>send status</li>
+<li>get schedule</li>
+<li>ingest</li>
+<li>Extensions could be things like</li>
+<li>Provides live status information
+        - Preview images
+         - Preview stream</li>
+<li>Selection of inputs</li>
+<li>Selection of environments</li>
+</ul>
+</li>
+<li>Clearly define how metadata should be handled<ul>
+<li>What should a CA do with passed metadata</li>
+<li>Is a CA allowed to modify or add metadata</li>
+<li>How should metadata be added</li>
+</ul>
+</li>
+<li>Capture device API<ul>
+<li>Define common places to get status information from a capture agent</li>
+<li>Define information a capture agent should provide</li>
+<li>Examples</li>
+<li>JSON with status information</li>
+<li>preview image</li>
+<li>For tools like CA dashboard</li>
+</ul>
+</li>
+<li>WebSocket Communication for Server to CA Communication<ul>
+<li>Idea from vendors</li>
+<li>Makes it possible to get through firewall</li>
+<li>No real example for what this would be used</li>
+</ul>
+</li>
+<li>Normalization of Input Names<ul>
+<li>If a screen recording is selected it should be possible to swap the CA
+    and it should not break because it does not know the term</li>
+<li>If terms are not knows CA should fall back to default inputs</li>
+<li>We should define a set of recommended terms to use</li>
+<li>CA vendors should still be able to extend this set of terms</li>
+</ul>
+</li>
+<li>Switch to common format for input specification<ul>
+<li>Most things can be defined using JSON</li>
+<li>Not using JSON at the moment:</li>
+<li>iCal for schedule</li>
+<li>XML for inputs</li>
+</ul>
+</li>
+<li>Let CA specify environments<ul>
+<li>Additional settings for ca to set</li>
+<li>Example: A CA may specify that it supports an environment “Blackboard”
+    which, attached to a scheduled recording definition will make the CA send
+    some commands to a PTZ camera, …</li>
+<li>Combine this with input specification? <em>(-lars)</em></li>
+<li>Things that may be done based on an environment:</li>
+<li>Send HTTP requests</li>
+<li>Send RS232 commands</li>
+<li>Control Visca PTZ camera</li>
+</ul>
+</li>
+<li>Provide a CA test case<ul>
+<li>Script to run against a CA, ensuring basic functionality</li>
+</ul>
+</li>
+<li>How to handle live streaming events<ul>
+<li>Start separate discussion on list</li>
+<li>Harvard DCE has something</li>
+<li>NCast has something</li>
+</ul>
+</li>
+<li>Add support for a CA description <em>(MH-8963)</em></li>
+</ul></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

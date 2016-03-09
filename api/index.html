@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>Api - Capture Agent API Upgrade</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">Capture Agent API Upgrade</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Api</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../decisions/">Decisions</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../random-thoughts/">Random thoughts</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../summit2015-wishes/">Summit2015 wishes</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="..">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../decisions/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#capture-agent-api-version-2">Capture Agent API (Version 2)</a></li>
+        
+            <li><a href="#primary-changes-compared-to-ca-apiv1">Primary Changes Compared to CA-APIv1</a></li>
+        
+            <li><a href="#base-api">Base API</a></li>
+        
+            <li><a href="#extensions">Extensions</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="capture-agent-api-version-2">Capture Agent API (Version 2)</h1>
+<p><em>working draft</em></p>
+<p>This document specifies the communication between Opencast enabled capture
+devices (capture agents) and Opencast itself. It defines an extension or
+modification of the already existing API for Opencast 2.2 and prior versions.</p>
+<p>A basic idea behind this API update is to have a simple base or core API and
+several, optional extensions which capture agents may implement to extend their
+functionality.</p>
+<h2 id="primary-changes-compared-to-ca-apiv1">Primary Changes Compared to CA-APIv1</h2>
+<ul>
+<li>Registering capture agents<ul>
+<li>The URL is optional</li>
+</ul>
+</li>
+<li>Getting calendar/schedule<ul>
+<li>The format can be specified</li>
+<li>JSON is available additional to iCal</li>
+</ul>
+</li>
+<li>Setting capture agent configuration is available as extension</li>
+</ul>
+<h2 id="base-api">Base API</h2>
+<p>This part of the API is mandatory for CA vendors.</p>
+<p><em>Note: This is a slightly modified version of the current API with some
+additional clarifications and without the need to send configuration data to
+the core.</em></p>
+<h3 id="general-capture-agent-behavior">General Capture Agent Behavior</h3>
+<p>The following rules apply to the capture agent base API as well as to all
+extensions if not explicitly defined otherwise.</p>
+<ul>
+<li>The core must not attempt to connect to the agent. The communication is
+  unidirectional from agent to core. Extensions may ignore this rule, but even
+  then, agents have to work without a bidirectional connection.</li>
+<li>The agent must try to send its state to the core on a semi regular basis.
+  This should happen at least once the state changes (e.g. a recording is
+  started, stopped, …)</li>
+<li>The agent must try to send the recording state to the core on a semi regular
+  basis. This should happen at least once the recording state changes (e.g. a
+  recording is started, stopped or failed)</li>
+<li>The agent should try to update its calendaring data on a regular bases</li>
+<li>The agent is required to request the locations of the required REST endpoints
+  from the service registry on a semi regular basis</li>
+<li>If multiple endpoints for one task are available (e.g. multiple ingest
+  endpoints) the endpoint to talk to has to be picked randomly (random function
+  with uniform distribution) to ensure a balanced load on the system</li>
+<li>If there is an error during the communication with the core (e.g. network
+  failure), the agent must assume the old data to be still valid (schedule and
+  endpoints) and may ignore failures on status requests</li>
+</ul>
+<h3 id="quick-overview">Quick Overview</h3>
+<p>The following pseudo code defines what you are required to do as a capture
+agent. Note, that these are only the minimal requirements and you can do better.
+A more specific explanation of all the steps can be found below.</p>
+<pre><code>request rest endpoints              (1)
+register ca and set status          (2)
+repeat:
+   while no recording
+      get schedule/calendar         (3)
+   set agent and recording state    (4)
+   start recording                  (5)
+   set agent and recording state    (6)
+   update ingest endpoints          (7)
+   ingest recording                 (8)
+   set agent and recording state    (9)
+</code></pre>
+<h4 id="get-endpoint-locations-from-service-registry-1">Get Endpoint Locations From Service Registry (1)</h4>
+<p>First, you need to get the locations of the REST endpoints to talk to.  These
+information can be retrieved from the central service registry. It is likely
+that Matterhorn is running as a distributed system which means you cannot
+expect all endpoints on a single host.</p>
+<p>Three endpoint locations need to be requested:</p>
+<ul>
+<li>The capture-admin endpoint to register the agent and set status and
+  configuration: org.opencastproject.capture.admin</li>
+<li>The scheduler endpoint to get the current schedule for the agent from:
+  org.opencastproject.scheduler</li>
+<li>The ingest endpoint to upload the recordings to once they are done:
+  org.opencastproject.ingest</li>
+</ul>
+<p>To ask for an endpoint you would send an HTTP GET request to</p>
+<pre><code>${HOST}/services/available.json?serviceType=&lt;SERVICE&gt;
+</code></pre>
+<p>A result would look like</p>
+<pre><code>{
+  "services" : {
+    "service" : {
+      "active" : true,
+      "host" : "http://example.opencast.org:8080",
+      "path" : "/capture-admin",
+      ...
+    }
+  }
+}
+</code></pre>
+<p>These endpoints should be requested once when starting up the capture agent
+(1). While the capture-admin and scheduler endpoints may then be assumed to
+never change during the runtime of the capture agent, the ingest endpoint may
+change and the data should be re-requested every time before uploading
+(ingesting) data to the core.</p>
+<h4 id="register-the-capture-agent-and-set-current-status-2">Register the Capture Agent and set Current Status (2)</h4>
+<p>Once the endpoints to talk to are knows, it is time to register the capture
+agent at the core so that scheduled events can be added. This can be done by
+sending an HTTP POST request to:</p>
+<pre><code>${CAPTURE-ADMIN-ENDPOINT}/agents/&lt;name&gt;
+</code></pre>
+<p>…including the following data fields:</p>
+<pre><code>state=idle
+address=http(s)://&lt;ca-web-ui&gt; (OPTIONAL)
+</code></pre>
+<p>The name has to be a unique identifier of a single capture agent. Using the
+same name for several agents would mean sharing the same schedule and status
+which in general should be avoided.</p>
+<p>Sending this request will register the capture agent. After doing this, the
+capture agent should appear in the admin interface and schedules can be added
+for this agent.</p>
+<h4 id="getting-the-calendarschedule-3">Getting the Calendar/Schedule (3)</h4>
+<p>The calendar can be retrieved by sending an HTTP GET request to</p>
+<pre><code>${SCHEDULER-ENDPOINT}/calendars&lt;.format&gt;?agentid=&lt;name&gt;
+</code></pre>
+<p>The format can either be <code>.ical</code> or <code>.json</code>. If the format is omitted, iCal is
+being returned.  The file contains all scheduled upcoming recordings the
+capture agent should handle.</p>
+<p>Depending on the amount of recordings scheduled for the particular capture
+agent, this file may become very large. That is why there are two way of
+limiting the amount of necessary data to transfer and process:</p>
+<ol>
+<li>
+<p>Send along the optional parameter cutoff to limit the schedule to a
+    particular time span in the future.</p>
+<p>${SCHEDULER-ENDPOINT}/calendars?agentid=<name>&amp;cutoff=<time></p>
+</li>
+</ol>
+<p>The value for cutoff represents milliseconds from now.</p>
+<ol>
+<li>Use the HTTP ETag and If-Not-Modified header the have Matterhorn only sent
+    schedules when they have actually changed.</li>
+</ol>
+<h4 id="set-agent-and-recording-state-4">Set Agent and Recording State (4)</h4>
+<p>Setting the agent state is identical to the registration of the capture agent
+and done by sending an HTTP POST request to:</p>
+<pre><code>${CAPTURE-ADMIN-ENDPOINT}/agents/&lt;name&gt;
+</code></pre>
+<p>…including the following data fields:</p>
+<pre><code>state=capturing
+address=http(s)://&lt;ca-web-ui&gt; (OPTIONAL)
+</code></pre>
+<p>Additionally, set the recording state with an HTTP POST request to</p>
+<pre><code>${CAPTURE-ADMIN-ENDPOINT}/recordings/&lt;recording_id&gt;
+</code></pre>
+<p>…including the data field:</p>
+<pre><code>state=capturing
+</code></pre>
+<h4 id="recording-5">Recording (5)</h4>
+<p>This task is device specific. You may execute any code necessary to get the
+recording on your device.</p>
+<h4 id="set-agent-and-recording-state-6">Set Agent and Recording State (6)</h4>
+<p>This step is identical to step 4 except for the state.</p>
+<p>If the recording has failed, the recording state is updated with
+<code>capture_error</code> while the agents state is set back to <code>idle</code> if the error is
+non-permanent.</p>
+<p>If the recording was successful, both states are set to <code>uploading</code>.</p>
+<h4 id="get-ingest-endpoint-locations-from-service-registry-7">Get Ingest Endpoint Locations From Service Registry (7)</h4>
+<p>This step is identical to step 1 expect that it is sufficient to request the
+location for the service <code>org.opencastproject.ingest</code> only. If this request
+fails, assume the old data to be valid.</p>
+<h4 id="ingest-upload-recording-8">Ingest (Upload) Recording (8)</h4>
+<p>Use the ingest endpoint to upload the recording.</p>
+<ul>
+<li>Recording files may be deleted if the ingest was successful.</li>
+<li>Recordings should be stored in case of a failure.</li>
+</ul>
+<p><em>TODO: Descripbe ingest requests</em></p>
+<h4 id="set-agent-and-recording-state-6_1">Set Agent and Recording State (6)</h4>
+<p>Again, this step is identical to step 4 except for the state.</p>
+<p>If the upload has failed, the recording state is updated with
+<code>upload_error</code> while the agents state is set back to <code>idle</code> if the error is
+non-permanent.</p>
+<p>If the upload was successful, the recording status is set to <code>upload_finished</code>
+while the agents state is set back to <code>idle</code>.</p>
+<h2 id="extensions">Extensions</h2>
+<p>Extensions may be specified as addition to the base API. Extensions are always
+required to be optional and parts of them may not be required by Opencast
+itself or capture agents to function.</p>
+<h3 id="extension-capture-agent-configuration-id-cfg">Extension: Capture Agent Configuration (id: CFG)</h3>
+<p><em>TODO: Old configuration but accepts JSON as well</em></p>
+<h3 id="extension-recording-preview-id-preview">Extension: Recording Preview (id: PREVIEW)</h3>
+<p><em>TODO: Provide locazion of preview image or stream for Opencast to use as
+preview on a capture agent dashboard</em></p>
+<h3 id="extension-bi-directional-ca-communication-id-talkback">Extension: Bi-directional CA Communication (id: TALKBACK)</h3>
+<p><em>TODO: Enable use of WebSockets or longpolling for faster communication and
+less stress on the admin node.</em></p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
