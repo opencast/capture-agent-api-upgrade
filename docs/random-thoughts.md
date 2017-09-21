@@ -14,3 +14,5 @@ easy to grasp way for users to see what the device is capable of. Example:
     Environment selection        ✕
 
 
+
+- We need a compatible way for vendors to indicate that they support capture duration extension
